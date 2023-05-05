@@ -3,7 +3,16 @@ require('dotenv').config()
 
 
 // Connects to the database... if we had one :( 
-// TODO                                        
+const mongoose = require("mongoose")
+mongoose.connect("mongodb://127.0.0.1:27017/my-first-db")
+.then(() => {
+  console.log("conectados a la base de datos")
+})
+.catch((err) => {
+  console.log(err)
+})
+
+
 
 
 // Handles http requests (express is node js framework)
@@ -20,10 +29,13 @@ app.use(express.static("public"))
 app.set('view engine', 'hbs');
 app.set('views', __dirname + '/views/' )
 
+// const nuevaApi = new PatataApi(process.env.API_KEY)
+
 
 // Local Variables 
 // TODO           
 
+const Movie = require("./models/Movie.model.js")
 
 // 👇 Start handling routes here
 app.get('/', (req, res) => {
@@ -32,10 +44,20 @@ app.get('/', (req, res) => {
 
 app.get('/about', (req, res) => {
   res.render("about.hbs")
+  console.log(process.env.PALABRA_SUPER_SECRETA)
 })
 
 app.get('/my-hobbies', (req, res) => {
-  res.render("my-hobbies.hbs")
+  Movie.find()
+  .then((response) => {
+    console.log(response)
+    res.render("my-hobbies.hbs", {
+      allMovies: response
+    })
+  })
+  .catch((err) => {
+    console.log(err)
+  })
 })
 
 
